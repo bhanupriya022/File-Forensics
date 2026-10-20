@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>File Forensics</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+
+  <!-- ═══ NAVBAR ═══ -->
+  <nav class="navbar">
+    <div class="nav-inner">
+      <div class="nav-brand">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
+        <span>File Forensics</span>
+      </div>
+      <div class="nav-links">
+        <a class="nav-link active" data-tab="home" href="#">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          Home
+        </a>
+        <a class="nav-link" data-tab="upload" href="#">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>
+          Upload
+        </a>
+        <a class="nav-link" data-tab="detection" href="#">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          Format Detection
+        </a>
+        <a class="nav-link" data-tab="mismatch" href="#">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          Mismatch
+        </a>
+        <a class="nav-link" data-tab="risk" href="#">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Risk Assessment
+        </a>
+        <a class="nav-link" data-tab="report" href="#">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          Report
+        </a>
+      </div>
+      <div class="nav-status">
+        <span class="status-dot" id="statusDot"></span>
+        <span id="statusText" class="status-label">Checking…</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ═══ PAGE HERO ═══ -->
+  <div class="hero" id="heroBar">
+    <div class="hero-inner">
+      <h1 id="heroTitle">Upload Files</h1>
+      <p id="heroSub">Select or drop files to begin forensic analysis</p>
+    </div>
+    <div class="hero-stats hidden" id="heroStats">
+      <div class="stat-item">
+        <span class="stat-num" id="statTotal">0</span>
+        <span class="stat-lbl">Scanned</span>
+      </div>
+      <div class="stat-sep"></div>
+      <div class="stat-item hi">
+        <span class="stat-num" id="statHigh">0</span>
+        <span class="stat-lbl">High Risk</span>
+      </div>
+      <div class="stat-sep"></div>
+      <div class="stat-item warn">
+        <span class="stat-num" id="statMismatch">0</span>
+        <span class="stat-lbl">Mismatches</span>
+      </div>
+      <div class="stat-sep"></div>
+      <div class="stat-item safe">
+        <span class="stat-num" id="statSafe">0</span>
+        <span class="stat-lbl">Safe</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ MAIN ═══ -->
+  <main class="main-wrap">
+
+    <!-- ── TAB: Home ── -->
+    <section class="tab-pane active" id="tabHome">
+      <div class="home-hero">
+        <div class="home-logo">
+          <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+        </div>
+        <h1 class="home-title">File Forensics</h1>
+        <p class="home-tagline">Detect hidden threats by examining what files <em>really</em> are — not what their names claim to be.</p>
+        <button class="btn-primary home-cta" id="homeGetStarted">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>
+          Get Started
+        </button>
+      </div>
+
+      <div class="home-features">
+        <div class="home-feat-card">
+          <div class="hfc-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>
+          </div>
+          <h3>File Upload</h3>
+          <p>Drag-and-drop or browse any file type. Analyze multiple files at once, up to 50 MB each.</p>
+        </div>
+        <div class="home-feat-card">
+          <div class="hfc-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </div>
+          <h3>Format Detection</h3>
+          <p>Identifies true file formats via magic bytes, RIFF/ZIP container inspection, and text content heuristics across 40+ formats.</p>
+        </div>
+        <div class="home-feat-card">
+          <div class="hfc-icon warn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          </div>
+          <h3>Mismatch Detection</h3>
+          <p>Flags files whose extension doesn't match their detected MIME type — a common sign of disguised malware or obfuscation.</p>
+        </div>
+        <div class="home-feat-card">
+          <div class="hfc-icon hi">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <h3>Risk Assessment</h3>
+          <p>Scores every file 0–100 (SAFE / LOW / MEDIUM / HIGH) based on format type, extension mismatch, and dangerous disguise patterns.</p>
+        </div>
+        <div class="home-feat-card">
+          <div class="hfc-icon safe">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          </div>
+          <h3>Analysis Report</h3>
+          <p>Full per-file reports with detected format, Shannon entropy, MD5 &amp; SHA-256 hashes, and timestamped findings.</p>
+        </div>
+        <div class="home-feat-card">
+          <div class="hfc-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          </div>
+          <h3>No Database, No Storage</h3>
+          <p>All analysis is in-memory. Uploaded files are deleted immediately after analysis — nothing is stored on disk.</p>
+        </div>
+      </div>
+
+      <div class="home-how">
+        <h2>How it works</h2>
+        <div class="how-steps">
+          <div class="how-step">
+            <div class="step-num">1</div>
+            <div>
+              <strong>Upload</strong>
+              <p>Drop one or more files onto the upload zone. Any format, any extension.</p>
+            </div>
+          </div>
+          <div class="how-step-arrow">→</div>
+          <div class="how-step">
+            <div class="step-num">2</div>
+            <div>
+              <strong>Analyze</strong>
+              <p>The backend reads magic bytes, inspects containers, computes entropy and cryptographic hashes.</p>
+            </div>
+          </div>
+          <div class="how-step-arrow">→</div>
+          <div class="how-step">
+            <div class="step-num">3</div>
+            <div>
+              <strong>Review</strong>
+              <p>Browse per-file results across the Format Detection, Mismatch, Risk, and Report tabs.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── TAB: Upload ── -->
+    <section class="tab-pane" id="tabUpload">
+      <div class="drop-zone" id="dropZone">
+        <div class="dz-icon">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="16 16 12 12 8 16"/>
+            <line x1="12" y1="12" x2="12" y2="21"/>
+            <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/>
+          </svg>
+        </div>
+        <p class="dz-title">Drop files here to analyze</p>
+        <p class="dz-sub">or <label for="fileInput" class="link">browse from your computer</label></p>
+        <p class="dz-caps">Any file type &nbsp;·&nbsp; Up to 50 MB per file &nbsp;·&nbsp; Multiple files supported</p>
+        <input type="file" id="fileInput" multiple hidden />
+      </div>
+
+      <div id="queueWrap" class="queue-wrap hidden">
+        <div class="section-head">
+          <h2 class="section-title">
+            File Queue
+            <span class="count-badge" id="queueCount">0</span>
+          </h2>
+          <button class="ghost-btn" id="clearBtn">Clear all</button>
+        </div>
+        <div class="table-wrap">
+          <table class="file-table">
+            <thead>
+              <tr>
+                <th>Filename</th>
+                <th>Type</th>
+                <th class="right">Size</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="fileQueue"></tbody>
+          </table>
+        </div>
+        <div class="queue-foot">
+          <button class="btn-primary" id="analyzeBtn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+            Run Analysis
+          </button>
+          <span class="queue-hint" id="queueHint"></span>
+        </div>
+      </div>
+
+      <div id="loaderWrap" class="loader-row hidden">
+        <div class="spinner"></div>
+        <div>
+          <div class="loader-title">Analyzing files…</div>
+          <div class="loader-sub">Reading magic bytes, computing entropy &amp; hashes</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── TAB: Format Detection ── -->
+    <section class="tab-pane" id="tabDetection">
+      <div class="info-card">
+        <div class="info-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </div>
+        <div>
+          <h3>Actual File Format Detection</h3>
+          <p>Identifies the true format of a file by reading its binary content — not by trusting its name.</p>
+        </div>
+      </div>
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="fc-label">Magic Bytes</div>
+          <p>The first bytes of every file contain a unique signature. File Forensics checks against 40+ known signatures covering images, documents, executables, archives, audio, video, fonts, and more.</p>
+        </div>
+        <div class="feature-card">
+          <div class="fc-label">Container Refinement</div>
+          <p>ZIP-based formats (DOCX, XLSX, PPTX, ODF, JAR) are identified by inspecting the ZIP entry list. RIFF containers (WAV, AVI, WebP) are distinguished by their 4-byte tag at offset 8.</p>
+        </div>
+        <div class="feature-card">
+          <div class="fc-label">Text Heuristics</div>
+          <p>When no binary signature matches, a printable-byte ratio test is applied. Matching content is further classified as HTML, XML, JSON, Python, Shell, CSS, JavaScript, or CSV.</p>
+        </div>
+        <div class="feature-card">
+          <div class="fc-label">Supported Formats</div>
+          <p>JPEG, PNG, GIF, BMP, TIFF, WebP · PDF, DOCX, XLSX, PPTX, ODF · MP3, FLAC, OGG, WAV, MP4, MKV, AVI · ZIP, RAR, 7Z, TAR, GZ · PE, ELF, Mach-O · TTF, OTF, WOFF · SQLite, PostScript</p>
+        </div>
+      </div>
+      <div class="no-results-note" id="detectionEmpty">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        No files analyzed yet. Go to <a href="#" data-tab="upload" class="link nav-shortcut">Upload</a> to scan files.
+      </div>
+      <div id="detectionResults" class="hidden"></div>
+    </section>
+
+    <!-- ── TAB: Mismatch Detection ── -->
+    <section class="tab-pane" id="tabMismatch">
+      <div class="info-card">
+        <div class="info-icon warn">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </div>
+        <div>
+          <h3>Extension Mismatch Detection</h3>
+          <p>Compares the declared file extension against the detected MIME type. A mismatch may indicate disguised malware, corrupted files, or deliberate obfuscation.</p>
+        </div>
+      </div>
+      <div class="no-results-note" id="mismatchEmpty">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        No files analyzed yet. Go to <a href="#" data-tab="upload" class="link nav-shortcut">Upload</a> to scan files.
+      </div>
+      <div id="mismatchResults" class="hidden"></div>
+    </section>
+
+    <!-- ── TAB: Risk Assessment ── -->
+    <section class="tab-pane" id="tabRisk">
+      <div class="info-card">
+        <div class="info-icon hi">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <div>
+          <h3>Risk Assessment</h3>
+          <p>Each file is scored 0–100 based on its detected format, extension mismatch, and disguise pattern. Scores map to SAFE / LOW / MEDIUM / HIGH.</p>
+        </div>
+      </div>
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="fc-label hi">+50 pts — Extension Mismatch</div>
+          <p>The declared extension does not match the actual detected MIME type.</p>
+        </div>
+        <div class="feature-card">
+          <div class="fc-label hi">+40 pts — Executable / Script</div>
+          <p>Detected format is a Windows PE, ELF binary, Mach-O binary, shell script, or batch file.</p>
+        </div>
+        <div class="feature-card">
+          <div class="fc-label warn">+20 pts — Archive / Database</div>
+          <p>Detected format is a compressed archive (ZIP, RAR, 7Z, TAR, GZ) or SQLite database.</p>
+        </div>
+        <div class="feature-card">
+          <div class="fc-label hi">+10 pts — Dangerous Disguise</div>
+          <p>A high-risk format (e.g. PE executable) is disguised as a common benign extension (.pdf, .jpg, .txt).</p>
+        </div>
+      </div>
+      <div class="no-results-note" id="riskEmpty">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        No files analyzed yet. Go to <a href="#" data-tab="upload" class="link nav-shortcut">Upload</a> to scan files.
+      </div>
+      <div id="riskResults" class="hidden"></div>
+    </section>
+
+    <!-- ── TAB: Report ── -->
+    <section class="tab-pane" id="tabReport">
+      <div class="no-results-note" id="reportEmpty">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        No files analyzed yet. Go to <a href="#" data-tab="upload" class="link nav-shortcut">Upload</a> to scan files.
+      </div>
+      <div id="reportResults" class="hidden">
+        <div class="section-head">
+          <h2 class="section-title">Analysis Report</h2>
+          <div class="report-actions">
+            <button class="ghost-btn" id="newScanBtn">New scan</button>
+          </div>
+        </div>
+        <div id="reportCards"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <span>File Forensics — format &amp; extension mismatch analyzer</span>
+      <span>Analysis runs server-side · no files are stored</span>
+    </div>
+  </footer>
+
+  <script src="/static/script.js"></script>
+</body>
+</html>
